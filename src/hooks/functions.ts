@@ -26,4 +26,12 @@ const capitalizeFirstLetter = (value: string) => {
   return result;
 };
 
-export { formatDate, formattedNumber, capitalizeFirstLetter };
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength - 3) + '...';
+  }
+
+  return text;
+};
+
+export { formatDate, formattedNumber, capitalizeFirstLetter, truncateText };

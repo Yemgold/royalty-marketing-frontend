@@ -17,6 +17,8 @@ import AllCustomersPage from './pages/admins/Customers/AllCustomersPage';
 import TokenForValuePage from './pages/customers/TokenForValuePage';
 import TokenForTargetPage from './pages/customers/TokenForTargetPage';
 import TransactionHistoryPage from './pages/TransactionHistoryPage';
+import NotificationsPage from './pages/NotificationsPage';
+import NotificationDetailsPage from './pages/NotificationDetailsPage';
 
 function App() {
   return (
@@ -32,6 +34,11 @@ function App() {
         <Route
           path="/transaction-history"
           element={<TransactionHistoryPage />}
+        />
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route
+          path="/notification/:notificationId"
+          element={<NotificationDetailsPage />}
         />
 
         {/* ADMIN ROUTES */}

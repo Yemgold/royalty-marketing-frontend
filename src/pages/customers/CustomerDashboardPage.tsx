@@ -44,17 +44,25 @@ const CustomerDashboardPage = () => {
           </Link>
 
           <select
-            className=" bg-primary text-[13px]  py-1 px-6 border p-2 rounded-full cursor-pointer"
+            className=" bg-primary font-bold text-white text-[13px]  py-1 px-6 border p-2 rounded-full cursor-pointer"
             name=""
             id=""
             value={selectedToken}
             onChange={handleNavigation}
           >
-            <option className="text-center" disabled value="">
+            <option
+              className="text-center text-white font-bold"
+              disabled
+              value=""
+            >
               Redeem Token
             </option>
             {tokensArray.map((token, index) => (
-              <option value={token.title} key={index}>
+              <option
+                className="text-white font-bold"
+                value={token.title}
+                key={index}
+              >
                 {token.title}
               </option>
             ))}

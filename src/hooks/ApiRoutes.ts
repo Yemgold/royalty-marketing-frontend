@@ -8,9 +8,21 @@ const allCustomersRoute = ``;
 const allTokenTransactionsRoute = ``;
 const allTradersRoute = ``;
 const transactionsRoute = ``;
+const markNotificationAsReadRoute = ``;
+const deleteManyNotificationRoute = ``;
+const deleteNotificationRoute = ``;
+const singleNotificationRoute = ``;
+const markNotificationAsViewedRoute = ``;
+const allNotificationsRoute = ``;
 const allTransactionsRoute = ``;
 
 export {
+  allNotificationsRoute,
+  markNotificationAsViewedRoute,
+  singleNotificationRoute,
+  deleteNotificationRoute,
+  markNotificationAsReadRoute,
+  deleteManyNotificationRoute,
   allTransactionsRoute,
   transactionsRoute,
   allTokenTransactionsRoute,

@@ -17,6 +17,24 @@ export type FormData = ResetPasswordFormData & {
   selected_role: string;
 };
 
+export type NotificationProp = {
+  id: number;
+  is_read: boolean;
+  created_at: string;
+  updated_at: string;
+  message: string;
+  receiver: string;
+  title: string;
+  user_id: string;
+};
+
+export type NotificationState = {
+  userNotifications: NotificationProp[];
+  totalIsViewed: number;
+  totalNotificationsCount: number;
+  singleUserNotification: NotificationProp;
+};
+
 export type UserState = {
   currentUser: CurrentUserType;
   access: string;

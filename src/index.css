@@ -2,10 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+body,
+#root,
 html {
-  /* overflow: hidden; */
+  overflow: hidden;
   height: 100%;
-  margin-bottom: 50px;
+  /* margin-bottom: 50px; */
   /* background-color: rgb(1, 1, 30); */
 }
 

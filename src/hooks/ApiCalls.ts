@@ -10,31 +10,41 @@ import {
   allTradersRoute,
   allTokenTransactionsRoute,
   transactionsRoute,
-  allTransactionsRoute,
-  deleteManyNotificationRoute,
-  deleteNotificationRoute,
-  singleNotificationRoute,
-  markNotificationAsViewedRoute,
-  allNotificationsRoute,
+  markNotificationAsReadRoute,
+  traderSubmitPaymentRoute,
+  sendRoyaltyCoinRoute,
+  createSalesTargetAmountRoute,
+  bookingGoodsRoute,
+  transferCashFunctionRoute,
+  withdrawCashFunctionRoute,
+  fetchBiddingProductRoute,
+  processBiddingFunctionRoute,
 } from './ApiRoutes';
 import {
+  bookingGoodsType,
   CustomerDataType,
   FormData,
   LoginFormData,
+  ProcessBiddingType,
   ResetPasswordFormDataType,
+  SendRoyaltyCoinType,
+  SubmitPaymentType,
   TransactionDataType,
+  UserState,
   VerificationDataType,
+  withdrawCashType,
 } from '../constants/types';
+import { useSelector } from 'react-redux';
 
 const useApi = () => {
-  const webAuth = '';
+  const { access } = useSelector((state: { user: UserState }) => state.user);
   const header = {
     'Content-Type': 'application/json',
   };
 
   const authHeader = {
     ...header,
-    Authorization: `Bearer ${webAuth}`,
+    Authorization: `Bearer ${access}`,
   };
 
   const passwordReset = async (data: ResetPasswordFormDataType) => {
@@ -87,9 +97,20 @@ const useApi = () => {
   const registerUser = async (formData: FormData) => {
     try {
       console.log('API formData', formData);
-      const response = await axios.post(RegisterRoute, formData, {
+      let regRoute = '';
+      console.log('register formData:', formData);
+      if (formData?.role === 'trader') {
+        regRoute = `${RegisterRoute}-trader`;
+      } else {
+        if (formData?.role === 'customer') {
+          regRoute = `${RegisterRoute}-customer`;
+        }
+      }
+      const response = await axios.post(regRoute, formData, {
         headers: header,
       });
+
+      console.log('register response:', response);
 
       return response.data;
     } catch (error) {
@@ -100,13 +121,135 @@ const useApi = () => {
 
   const verifyUser = async (data: VerificationDataType) => {
     try {
-      console.log('API formData', data);
       const response = await axios(
         `${VerificationRoute}?userId=${data?.userId}&token=${data?.token}`,
         {
           headers: header,
         }
       );
+
+      console.log('API response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const processBiddingFunction = async (data: ProcessBiddingType) => {
+    try {
+      console.log('API payload:', data);
+      const response = await axios.post(processBiddingFunctionRoute, data, {
+        headers: authHeader,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const fetchBiddingProduct = async () => {
+    try {
+      const response = await axios(fetchBiddingProductRoute, {
+        headers: authHeader,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const bookingGoods = async (data: bookingGoodsType) => {
+    try {
+      console.log('data:', data);
+      const response = await axios.post(bookingGoodsRoute, data, {
+        headers: authHeader,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const sendRoyaltyCoin = async (data: SendRoyaltyCoinType) => {
+    try {
+      const response = await axios.post(sendRoyaltyCoinRoute, data, {
+        headers: authHeader,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const createSalesTargetAmount = async (data: number) => {
+    try {
+      // console.log('authHeader:', authHeader);
+      // console.log('data:', data);
+
+      const salesTargetAmount = data;
+
+      console.log('salesTargetAmount:', salesTargetAmount);
+
+      const response = await axios.post(
+        createSalesTargetAmountRoute,
+        { salesTargetAmount },
+        {
+          headers: authHeader,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const withdrawCashFunction = async (data: withdrawCashType) => {
+    try {
+      const response = await axios.post(withdrawCashFunctionRoute, data, {
+        headers: authHeader,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const transferCashFunction = async (amount: number) => {
+    try {
+      const response = await axios.post(
+        transferCashFunctionRoute,
+        { amount },
+        {
+          headers: authHeader,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const traderSubmitPayment = async (data: SubmitPaymentType) => {
+    try {
+      console.log('authHeader:', authHeader);
+      const response = await axios.post(traderSubmitPaymentRoute, data, {
+        headers: authHeader,
+      });
 
       return response.data;
     } catch (error) {
@@ -153,6 +296,7 @@ const useApi = () => {
       throw error;
     }
   };
+
   const getPlatformTokenTransactions = async (
     page: string,
     limit: string,
@@ -171,6 +315,7 @@ const useApi = () => {
       throw error;
     }
   };
+
   const getPlatformTraders = async (
     page: string,
     limit: string,
@@ -212,62 +357,6 @@ const useApi = () => {
     }
   };
 
-  const getPlatformTransactions = async (
-    page: string,
-    limit: string,
-    searchValue: string
-  ): Promise<TransactionDataType> => {
-    try {
-      const transactions = await axios.get<TransactionDataType>(
-        `${allTransactionsRoute}?searchParams=${searchValue}&page=${page}&limit=${limit}`,
-        {
-          headers: authHeader,
-        }
-      );
-      return transactions.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const getNotifications = async (
-    page: string,
-    limit: string,
-    searchValue: string
-  ) => {
-    try {
-      const response = await axios(
-        `${allNotificationsRoute}?searchParams=${searchValue}&page=${page}&limit=${limit}`,
-        {
-          headers: authHeader,
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const markNotificationsAsViewed = async () => {
-    try {
-      const response = await axios.put(
-        markNotificationAsViewedRoute,
-        {},
-        {
-          headers: authHeader,
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
   const markANotificationAsRead = async (notification_id: string) => {
     console.log(notification_id);
     try {
@@ -286,64 +375,14 @@ const useApi = () => {
     }
   };
 
-  const getSingleNotification = async (notification_id: string) => {
-    try {
-      const response = await axios(
-        `${singleNotificationRoute}/${notification_id}`,
-        {
-          headers: authHeader,
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const deleteNotification = async (notification_id: number) => {
-    try {
-      const id = notification_id.toString();
-      const response = await axios.delete(`${deleteNotificationRoute}/${id}`, {
-        headers: authHeader,
-      });
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const deleteManyNotifications = async (notification_ids: number[]) => {
-    try {
-      console.log('deleteManyNotifications:', notification_ids);
-      const response = await axios.post(
-        deleteManyNotificationRoute,
-        {
-          notification_ids,
-        },
-        {
-          headers: authHeader,
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
   return {
-    getSingleNotification,
+    processBiddingFunction,
+    fetchBiddingProduct,
+    withdrawCashFunction,
+    transferCashFunction,
+    sendRoyaltyCoin,
+    createSalesTargetAmount,
     markANotificationAsRead,
-    deleteManyNotifications,
-    deleteNotification,
-    getNotifications,
-    markNotificationsAsViewed,
-    getPlatformTransactions,
     getUserTransactions,
     getPlatformTraders,
     getPlatformTokenTransactions,
@@ -354,6 +393,8 @@ const useApi = () => {
     loginUser,
     forgotPass,
     passwordReset,
+    traderSubmitPayment,
+    bookingGoods,
   };
 };
 

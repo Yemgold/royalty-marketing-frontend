@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { buttonStyle } from '../constants/styles';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -16,10 +16,13 @@ type FormData = {
   password: string;
   confirm_password: string;
   email: string;
+  name: string;
   phone_number?: string;
 };
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
@@ -33,6 +36,10 @@ const RegisterPage = () => {
     email: '',
     password: '',
     confirm_password: '',
+    // email: 'votinggivers@gmail.com',
+    // password: 'Password@6910',
+    // confirm_password: 'Password@6910',
+    name: '',
   });
 
   const { registerUser } = useApi();
@@ -80,6 +87,7 @@ const RegisterPage = () => {
 
     const trimmedFormData = {
       email: formData.email.trim(),
+      name: formData.name.trim(),
       password: formData.password.trim(),
       confirm_password: formData.confirm_password.trim(),
       phone_number: phoneValue.trim(),
@@ -112,9 +120,21 @@ const RegisterPage = () => {
     try {
       const response = await registerUser({
         ...trimmedFormData,
-        selected_role: selectedRole,
+        role: selectedRole,
       });
-      console.log(response);
+
+      if (response) {
+        toast.success(response.message);
+        setFormData({
+          email: '',
+          password: '',
+          confirm_password: '',
+          name: '',
+        });
+
+        navigate('/login');
+        return;
+      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         console.error(error.response.data.message);
@@ -132,8 +152,8 @@ const RegisterPage = () => {
     <div className="flex flex-col md:flex-row md:mt-[70px] lg:justify-around md:gap-[100px] justify-center items-center md:px-10 lg:px-20 py-10">
       <div className="w-[90%] md:w-[50%] lg:w-[50%]">
         <img
-          className="w-[100%] md:w-[80%] rounded-lg"
-          src="../../../images/placeholder.jpg"
+          className="w-[100%] md:w-[80%] rounded-lg h-[400px]"
+          src="../../../images/placeholder.png"
           alt=""
         />
       </div>
@@ -146,6 +166,19 @@ const RegisterPage = () => {
           <p className="text-center text-xl font-semibold">
             Royalty Reward <br /> Token
           </p>
+
+          <div className="">
+            <Form
+              title={'Name'}
+              type={'text'}
+              required={true}
+              placeholder={'name...'}
+              value={formData.name}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              setValue={(value) => handleChange('name', value)}
+            />
+          </div>
 
           <div className="">
             <Form
@@ -184,7 +217,7 @@ const RegisterPage = () => {
               </button>
             </div>
 
-            <div className="relative mb-2 h-20">
+            <div className="relative mb-32 h-20">
               <Form
                 title={'Confirm Password'}
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -214,7 +247,7 @@ const RegisterPage = () => {
               </button>
             </div>
           </div>
-          <div className="mt-28">
+          <div className="mt-20">
             <Phone value={phoneValue} setValue={setPhoneValue} />
           </div>
           <div className="mt-3 flex items-end flex-col">

@@ -4,7 +4,7 @@ const passwordRegex =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\/-])(?=.*[0-9]).{8,32}$/;
 
 export const joiLoginValidationSchema = Joi.object({
-  login_input: Joi.string()
+  email: Joi.string()
     .required()
     .custom((value, helpers) => {
       const emailValidation = Joi.string()
@@ -15,14 +15,14 @@ export const joiLoginValidationSchema = Joi.object({
         const usernameRegexPattern = /^[a-zA-Z0-9_]{3,}$/;
         if (!usernameRegexPattern.test(value)) {
           return helpers.error('any.invalid', {
-            custom: 'Invalid email or username',
+            custom: 'Invalid email',
           });
         }
       }
       return value;
     })
     .messages({
-      'string.empty': 'Email or username is required',
+      'string.empty': 'Email is required',
       'any.invalid': '{{#custom}}',
     }),
 
@@ -43,6 +43,7 @@ export const joiRegisterValidationSchema = Joi.object({
     .email({ tlds: { allow: false } })
     .required()
     .label('Email'),
+  name: Joi.string().min(3).required().label('Name'),
   password: Joi.string()
     .min(8)
     .max(32)
@@ -84,4 +85,29 @@ export const joiResetPasswordValidationSchema = Joi.object({
     .required()
     .label('Confirm Password')
     .messages({ 'any.only': 'Password and Confirm Password do not match' }),
+});
+
+export const joiValidatePaymentSchema = Joi.object({
+  amount: Joi.number().min(4),
+});
+
+export const joiValidateTransferCashSchema = Joi.object({
+  referralCash: Joi.number(),
+});
+
+export const joiValidateSendCoinsSchema = Joi.object({
+  amount_of_goods_purchased: Joi.number(),
+  customerToken: Joi.string().min(4),
+});
+
+export const joiValidateBookingSchema = Joi.object({
+  packs: Joi.string(),
+  referralToken: Joi.string().min(4),
+});
+
+export const joiValidateWithdrawCashSchema = Joi.object({
+  bankName: Joi.string(),
+  accountNumber: Joi.string(),
+  accountName: Joi.string(),
+  amount: Joi.number(),
 });

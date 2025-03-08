@@ -130,8 +130,8 @@ const ResetPasswordPage = () => {
     <div className="flex flex-col md:flex-row md:mt-[70px] lg:justify-around md:gap-[100px] justify-center items-center md:px-10 lg:px-20 py-10">
       <div className="w-[90%] md:w-[50%] lg:w-[50%]">
         <img
-          className="w-[100%] md:w-[80%] rounded-lg"
-          src="../../../images/placeholder.jpg"
+          className="w-[100%] md:w-[80%] rounded-lg h-[400px]"
+          src="../../../images/placeholder.png"
           alt=""
         />
       </div>

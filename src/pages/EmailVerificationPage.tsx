@@ -28,9 +28,9 @@ const EmailVerificationPage = () => {
         token,
       };
       const response = await verifyUser(data);
-      if (response.data) {
-        console.log(response.data.message);
-        toast.success(response.data.message);
+      console.log(response);
+      if (response) {
+        toast.success(response.message);
         setIsVerified(true);
         return;
       } else {

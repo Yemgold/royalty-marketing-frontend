@@ -1,50 +1,45 @@
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { UserState } from '../../constants/types';
 
 const TraderDashboardPage = () => {
+  const { currentUser } = useSelector(
+    (state: { user: UserState }) => state.user
+  );
+
+  console.log('user on trader dashboard:', currentUser);
   return (
-    <div className="flex md:flex-row flex-col max-w-[100%] items-center justify-between md:px-16 py-4 min-h-screen">
-      <div className="w-[90%] md:w-[50%] lg:w-[50%]">
-        <img
-          className="w-[100%] md:w-[80%] rounded-lg"
-          src="../../../public/images/placeholder.jpg"
-          alt=""
-        />
+    <div className="mb-32">
+      <p className="text-center text-xl mb-8 font-semibold uppercase mt-3 underline">
+        Dashboard
+      </p>
+      <div className="ml-10">
+        <div className="flex gap-1 uppercase w-full font-bold ">
+          <p className="text-left">Name:</p>
+          <p>{currentUser?.name}</p>
+        </div>
+        <div className="flex gap-1 uppercase w-full font-bold ">
+          <p className="text-left">Token:</p>
+          <p>{currentUser?.token}</p>
+        </div>
       </div>
-
-      <div className="w-[90%] md:w-[50%] lg:w-[50%] flex flex-col items-center">
-        <p className="text-center text-xl mb-8 font-semibold">Dashboard</p>
-        <div className="flex gap-20 md:gap-28 ml-[-20px] md:ml-0 items-start font-bold">
-          <p>Total token:</p>
-          <p>100,000.00</p>
+      <div className="flex lg:flex-row flex-col gap-10 max-w-full items-center justify-between md:px-5 lg:px-32">
+        <div className="w-[90%] lg:w-[50%]">
+          <img
+            className="w-[100%] rounded-lg h-[400px]"
+            src="../../../images/placeholder.png"
+            alt=""
+          />
         </div>
 
-        <div className="flex md:gap-9 gap-12 ml-[-20px] md:ml-0 items-start my-5">
-          <Link
-            className="bg-primary py-1 px-4 md:px-11 rounded-full text-[15px] content-center"
-            to="/trader/all-customers-confirmation"
-          >
-            View Request
-          </Link>
-          <p className="font-bold">100 Customers</p>
-        </div>
-
-        <div className="flex gap-6 md:gap-6 items-start">
-          <Link
-            className="bg-primary py-1 px-2 md:px-8 rounded-full text-[14px] content-center"
-            to="/trader/sales-promo"
-          >
-            Request for Token
-          </Link>
-          <Link
-            className="bg-primary py-1 px-8 rounded-full text-[14px] content-center"
-            to="#"
-          >
-            Transaction History
-          </Link>
-        </div>
-
-        <div className="mt-5 bg-primary h-28 mb-16 content-center w-[100%]">
-          <p className="text-center">Message from Admin</p>
+        <div className="w-[90%] lg:w-[50%] flex flex-col">
+          <div className="flex justify-between w-full font-bold">
+            <p className="text-left">Wallet Balance:</p>
+            <p>{currentUser?.walletBalance}</p>
+          </div>
+          <div className="flex justify-between w-full font-bold ">
+            <p className="text-left">Royalty Coin:</p>
+            <p>{currentUser?.royaltyCoinBalance}</p>
+          </div>
         </div>
       </div>
     </div>

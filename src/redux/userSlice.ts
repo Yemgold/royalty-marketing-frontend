@@ -13,7 +13,7 @@ const safelyParseJSON = (item: string | null) => {
 const initialState = {
   currentUser: safelyParseJSON(localStorage.getItem('currentUser')),
   access: safelyParseJSON(localStorage.getItem('access')),
-  web: safelyParseJSON(localStorage.getItem('web')),
+  refreshToken: safelyParseJSON(localStorage.getItem('refreshToken')),
   loading: false,
   error: null,
 };
@@ -28,13 +28,14 @@ const userSlice = createSlice({
 
     loginSuccess(state, action) {
       state.loading = false;
-      const { user, access, token } = action.payload;
+      console.log('payload:', action.payload);
+      const { user, accessToken, refreshToken } = action.payload;
       state.currentUser = user;
-      state.access = access;
-      state.web = token;
+      state.access = accessToken;
+      state.refreshToken = refreshToken;
       localStorage.setItem('currentUser', JSON.stringify(state.currentUser));
       localStorage.setItem('access', JSON.stringify(state.access));
-      localStorage.setItem('web', JSON.stringify(state.web));
+      localStorage.setItem('refreshToken', JSON.stringify(state.refreshToken));
     },
 
     loginFailure(state, action) {
@@ -46,11 +47,11 @@ const userSlice = createSlice({
       state.loading = false;
       state.currentUser = null;
       state.access = null;
-      state.web = null;
+      state.refreshToken = null;
 
       localStorage.removeItem('currentUser');
       localStorage.removeItem('access');
-      localStorage.removeItem('web');
+      localStorage.removeItem('refreshToken');
       state.error = null;
     },
 

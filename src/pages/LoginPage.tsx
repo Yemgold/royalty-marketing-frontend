@@ -8,17 +8,33 @@ import { toast } from 'react-toastify';
 import useApi from '../hooks/ApiCalls';
 import { joiLoginValidationSchema } from '../hooks/validation';
 import { buttonStyle } from '../constants/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { roles } from '../constants/array';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/userSlice';
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string>('');
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<LoginFormData>({
-    login_input: '',
+    email: '',
     password: '',
+    role: '',
   });
+
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    setSelectedRole(selectedValue);
+    setFormData((prev) => ({
+      ...prev,
+      role: selectedValue,
+    }));
+  };
 
   const { loginUser } = useApi();
 
@@ -43,9 +59,11 @@ const LoginPage = () => {
     e.preventDefault();
 
     const trimmedFormData = {
-      login_input: formData.login_input.trim().toLowerCase(),
+      email: formData.email.trim().toLowerCase(),
       password: formData.password.trim(),
     };
+
+    console.log('formData: ', trimmedFormData);
 
     const { error } = joiLoginValidationSchema.validate(trimmedFormData, {
       abortEarly: false,
@@ -68,7 +86,22 @@ const LoginPage = () => {
 
     setLoading(true);
     try {
-      const response = await loginUser(trimmedFormData);
+      const response = await loginUser(formData);
+      if (response) {
+        toast.success(response.message);
+        dispatch(loginSuccess(response));
+
+        if (response.user.role === 'trader') {
+          navigate('/trader/dashboard');
+          return;
+        } else if (response.user.role === 'customer') {
+          navigate('/customer/dashboard');
+          return;
+        } else {
+          navigate('/customer/dashboard');
+          return;
+        }
+      }
       console.log(response);
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
@@ -87,8 +120,8 @@ const LoginPage = () => {
     <div className="flex flex-col md:flex-row md:mt-[70px] lg:justify-around md:gap-[100px] justify-center items-center md:px-10 lg:px-20 py-10">
       <div className="w-[90%] md:w-[50%] lg:w-[50%]">
         <img
-          className="w-[100%] md:w-[80%] rounded-lg"
-          src="../../../images/placeholder.jpg"
+          className="w-[100%] md:w-[80%] rounded-lg h-[400px]"
+          src="../../../images/placeholder.png"
           alt=""
         />
       </div>{' '}
@@ -103,12 +136,12 @@ const LoginPage = () => {
 
           <div className="">
             <Form
-              title={'email or username'}
+              title={'email'}
               type={'text'}
               required={true}
-              placeholder={'email or username...'}
-              value={formData.login_input}
-              setValue={(value) => handleChange('login_input', value)}
+              placeholder={'email...'}
+              value={formData.email}
+              setValue={(value) => handleChange('email', value)}
             />
           </div>
 
@@ -139,6 +172,25 @@ const LoginPage = () => {
             >
               {showPassword ? <FaEye /> : <FaEyeSlash />}
             </button>
+          </div>
+
+          <div className="mt-3 flex items-end flex-col">
+            <select
+              className="w-full border p-2 rounded-full cursor-pointer"
+              name=""
+              id=""
+              value={selectedRole}
+              onChange={handleRoleChange}
+            >
+              <option disabled value="">
+                Choose type of account to open
+              </option>
+              {roles.map((role, index) => (
+                <option value={role.title} key={index}>
+                  {role.title}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="items-center flex flex-col mt-5">
             <Button

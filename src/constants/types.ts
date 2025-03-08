@@ -1,6 +1,7 @@
 export type LoginFormData = {
-  login_input: string;
+  email: string;
   password: string;
+  role: string;
 };
 
 export type ResetPasswordFormData = {
@@ -14,7 +15,8 @@ export type ResetPasswordFormDataType = ResetPasswordFormData &
 export type FormData = ResetPasswordFormData & {
   email: string;
   phone_number: string;
-  selected_role: string;
+  role: string;
+  name: string;
 };
 
 export type NotificationProp = {
@@ -48,6 +50,42 @@ export type VerificationDataType = {
   token: string;
 };
 
+export type ProcessBiddingType = {
+  productToken: string;
+  royaltyBidingAmount: string;
+};
+
+export type bookingGoodsType = {
+  packs: string;
+  referralToken: string;
+  customerToken: string;
+};
+
+export type biddingProductObjType = {
+  _id: string;
+  adminId: string;
+  name: string;
+  image: object;
+  cost: number;
+  productToken: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type biddingProductType = biddingProductObjType[];
+
+export type withdrawCashType = {
+  amount: number;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+};
+
+export type SendRoyaltyCoinType = {
+  amount_of_goods_purchased: number;
+  customerToken: string;
+};
+
 export type AllMyCustomersForTokenApprovalType = {
   contact_no: string;
   percent: number;
@@ -59,18 +97,45 @@ export type TokenState = {
   allMyCustomersForTokenApprovalTotalCount: number;
 };
 
-export type CurrentUserType = {
+export type ProfilePropType = {
+  business_address: string;
+  business_name: string;
+  phone_number: string;
+  bank_name?: string;
+  account_name?: string;
+  account_number?: string;
+};
+
+export type SubmitPaymentType = {
+  role: string;
   id: string;
+  amount: number;
+};
+
+export type CurrentUserType = {
+  _id: string;
+  email: string;
+  name: string;
+  role: string;
+  royaltyCoinBalance: number;
+  referralCashWallet: number;
+  bookingWallet: number;
+  biddingWallet: number;
+  potentialEarning: number;
+  salesTargetAmount: number;
+  token: string;
+  totalSales: number;
+  walletBalance: number;
+  profile: ProfilePropType;
+
   status: string;
   user_name: string;
-  email: string;
   first_name: string;
   last_name: string;
   phone_number: string;
   is_verified: boolean;
   created_at: string;
   updated_at: string;
-  role: string;
 };
 
 export type AdminState = {
@@ -158,3 +223,27 @@ export type FormDataKey = keyof FormData;
 export type ResetPasswordFormDataKey = keyof ResetPasswordFormData;
 
 export type LoginFormDataKey = keyof LoginFormData;
+
+export type SidebarComponentProps = {
+  toggle: boolean | undefined;
+  handleDropDownToggle?: () => void;
+  dropDownOpen?: boolean | undefined;
+  handleTheDropDownToggle?: () => void;
+  dropOpen?: boolean | undefined;
+  handleGeneralMenuToggle?: () => void;
+  generalMenuOpen?: boolean | undefined;
+  handleAdminMenuToggle?: () => void;
+  handleTraderMenuToggle?: () => void;
+  handleCustomerMenuToggle?: () => void;
+  adminMenuOpen?: boolean | undefined;
+  traderMenuOpen?: boolean | undefined;
+  customerMenuOpen?: boolean | undefined;
+  handleSuperAdminMenuToggle?: () => void;
+  handleCloseToggle?: () => void;
+  superAdminMenuOpen?: boolean | undefined;
+};
+
+export type NavLinkType = {
+  isActive: boolean;
+  extraClasses?: string;
+};
